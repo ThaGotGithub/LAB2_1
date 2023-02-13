@@ -1363,6 +1363,7 @@ void HAL_ADC_IRQHandler(ADC_HandleTypeDef* hadc)
   */
 HAL_StatusTypeDef HAL_ADC_Start_DMA(ADC_HandleTypeDef* hadc, uint32_t* pData, uint32_t Length)
 {
+	*pData=*pData*0.0012207;
   __IO uint32_t counter = 0U;
   ADC_Common_TypeDef *tmpADC_Common;
   
