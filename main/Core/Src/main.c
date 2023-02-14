@@ -47,6 +47,7 @@ UART_HandleTypeDef huart2;
 /* USER CODE BEGIN PV */
 uint16_t Got = 0;
 uint32_t Voltage = 0;
+float Temp=0;
 uint16_t adcRawData[20];
 uint32_t sum;
 /* USER CODE END PV */
@@ -112,7 +113,6 @@ int main(void)
 			timestamp = HAL_GetTick() + 1000;
 			HAL_GPIO_EXTI_Callback(GPIO_PIN_0);
 			HAL_ADC_Start_DMA(&hadc1, adcRawData, 20);
-
 
 		}
 	}
@@ -336,8 +336,8 @@ void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef *hadc) {
 	for (i = 0; i < 19; i=i+2) {
 		sum = adcRawData[i] + sum;
 	}
-	Voltage = ((sum / 10)*0.000610)*1000;
-
+	Voltage = (((((float)sum / 10)/4095)*3.3)*1000)*2;
+	Temp = (((0.76 - ((float)adcRawData[1]/4095)*3.3)/ 2.5) + 25.0)+273.15;
 }
 /* USER CODE END 4 */
 
