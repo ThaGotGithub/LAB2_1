@@ -45,7 +45,6 @@ DMA_HandleTypeDef hdma_adc1;
 UART_HandleTypeDef huart2;
 
 /* USER CODE BEGIN PV */
-uint16_t Got = 0;
 uint32_t Voltage = 0;
 float Temp = 0;
 uint16_t adcRawData[20];
@@ -320,7 +319,6 @@ static void MX_GPIO_Init(void)
 }
 
 /* USER CODE BEGIN 4 */
-
 void ReadADC() {
 	register i = 0;
 	//static sum;
