@@ -47,7 +47,7 @@ UART_HandleTypeDef huart2;
 /* USER CODE BEGIN PV */
 uint16_t Got = 0;
 uint32_t Voltage = 0;
-float Temp=0;
+float Temp = 0;
 uint16_t adcRawData[20];
 uint32_t sum;
 /* USER CODE END PV */
@@ -59,7 +59,7 @@ static void MX_DMA_Init(void);
 static void MX_USART2_UART_Init(void);
 static void MX_ADC1_Init(void);
 /* USER CODE BEGIN PFP */
-
+void ReadADC();
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
@@ -99,7 +99,7 @@ int main(void)
   MX_USART2_UART_Init();
   MX_ADC1_Init();
   /* USER CODE BEGIN 2 */
-
+	HAL_ADC_Start_DMA(&hadc1, adcRawData, 20);
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -111,9 +111,7 @@ int main(void)
 		static uint32_t timestamp = 0;
 		if (HAL_GetTick() >= timestamp) {
 			timestamp = HAL_GetTick() + 1000;
-			HAL_GPIO_EXTI_Callback(GPIO_PIN_0);
-			HAL_ADC_Start_DMA(&hadc1, adcRawData, 20);
-
+			ReadADC();
 		}
 	}
   /* USER CODE END 3 */
@@ -322,22 +320,17 @@ static void MX_GPIO_Init(void)
 }
 
 /* USER CODE BEGIN 4 */
-void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin) {
-	if (GPIO_Pin == GPIO_PIN_13) {
-		HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_5);
-		//HAL_ADC_Start_DMA(&hadc1, adcRawData, 20);
-	}
-}
-void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef *hadc) {
-	//adcRawData=HAL_ADC_GetValue(&hadc1);
+
+void ReadADC() {
 	register i = 0;
 	//static sum;
 	sum = 0;
-	for (i = 0; i < 19; i=i+2) {
+	for (i = 0; i < 19; i = i + 2) {
 		sum = adcRawData[i] + sum;
 	}
-	Voltage = (((((float)sum / 10)/4095)*3.3)*1000)*2;
-	Temp = (((0.76 - ((float)adcRawData[1]/4095)*3.3)/ 2.5) + 25.0)+273.15;
+	Voltage = (((((float) sum / 10) / 4095) * 3.3) * 1000) * 2;
+	Temp = (((0.76 - ((float) adcRawData[1] / 4095) * 3.3) / 2.5) + 25.0)
+			+ 273.15;
 }
 /* USER CODE END 4 */
 
